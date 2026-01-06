@@ -159,9 +159,9 @@ Edit `src/config.h`:
 #define WIFI_SSID "YourWiFiNetwork"
 #define WIFI_PASSWORD "YourWiFiPassword"
 
-// Braiins Pool (username is already set to "Silexperience")
-// If you need to change the worker name, edit:
-#define BRAIINS_WORKER "oct"  // Change to your worker name
+// Braiins Pool Configuration
+#define BRAIINS_USER "YourBraiinsUsername"  // Your Braiins Pool username
+#define BRAIINS_WORKER "worker1"            // Your worker name
 ```
 
 ### 4. Open in PlatformIO
@@ -314,7 +314,7 @@ Shows:
 **Solutions**:
 1. Verify your Braiins Pool username in `config.h`
 2. Check that you have active workers on Braiins Pool
-3. Test API manually: `https://pool.braiins.com/accounts/profile/json/btc/Silexperience/`
+3. Test API manually: `https://pool.braiins.com/accounts/profile/json/btc/YourUsername/`
 4. Wait 30 seconds for first data refresh
 
 ### Slow Performance / Low FPS

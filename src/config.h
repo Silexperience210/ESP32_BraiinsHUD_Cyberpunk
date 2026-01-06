@@ -4,15 +4,15 @@
 // ============================================
 // WIFI CONFIGURATION
 // ============================================
-#define WIFI_SSID "Freebox-66E1B2"        // Change this
-#define WIFI_PASSWORD "Alexandre" // Change this
+#define WIFI_SSID "YourWiFiNetwork"        // Change this to your WiFi name
+#define WIFI_PASSWORD "YourWiFiPassword"   // Change this to your WiFi password
 
 // ============================================
 // BRAIINS POOL CONFIGURATION
 // ============================================
-#define BRAIINS_USERNAME "Silexperience"
-#define BRAIINS_WORKER "oct"
-#define BRAIINS_API_TOKEN "FmUIuSYMTI3kt9VK"
+#define BRAIINS_USERNAME "YourBraiinsUsername"  // Change this to your Braiins Pool username
+#define BRAIINS_WORKER "worker1"                 // Change this to your worker name
+#define BRAIINS_API_TOKEN "YourAPIToken"         // Get this from your Braiins Pool account settings
 // Authenticated API endpoint
 #define BRAIINS_API_HOST "pool.braiins.com"
 #define BRAIINS_API_PATH "/accounts/profile/json/btc/"
