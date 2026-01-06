@@ -20,8 +20,8 @@
             position: relative;
         }
 
-        /* Animated background particles */
-        .particles {
+        /* Animated circuit background */
+        .circuits {
             position: fixed;
             top: 0;
             left: 0;
@@ -29,31 +29,98 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
+            opacity: 0.1;
         }
 
-        .particle {
+        .circuit-line {
             position: absolute;
-            background: #ff6600;
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-            opacity: 0.6;
+            background: linear-gradient(45deg, transparent, #00ffff, transparent);
+            height: 2px;
+            animation: circuitFlow 8s linear infinite;
         }
 
-        .particle:nth-child(2n) {
-            background: #00ffff;
-            animation-duration: 8s;
-            animation-delay: -2s;
+        .circuit-line:nth-child(1) {
+            width: 200px;
+            top: 20%;
+            left: -200px;
+            animation-delay: 0s;
         }
 
-        .particle:nth-child(3n) {
-            background: #ff0066;
-            animation-duration: 10s;
-            animation-delay: -4s;
+        .circuit-line:nth-child(2) {
+            width: 150px;
+            top: 40%;
+            right: -150px;
+            animation-delay: 2s;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+        .circuit-line:nth-child(3) {
+            width: 180px;
+            top: 60%;
+            left: -180px;
+            animation-delay: 4s;
+        }
+
+        .circuit-line:nth-child(4) {
+            width: 120px;
+            top: 80%;
+            right: -120px;
+            animation-delay: 6s;
+        }
+
+        @keyframes circuitFlow {
+            0% { transform: translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(calc(100vw + 200px)); opacity: 0; }
+        }
+
+        /* Mining symbols */
+        .mining-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+        }
+
+        .mining-symbol {
+            position: absolute;
+            color: #ff6600;
+            font-size: 24px;
+            animation: mine 4s ease-in-out infinite;
+            font-weight: bold;
+        }
+
+        .mining-symbol:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .mining-symbol:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .mining-symbol:nth-child(3) {
+            bottom: 25%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .mining-symbol:nth-child(4) {
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        @keyframes mine {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.2) rotate(5deg); opacity: 0.8; }
         }
 
         .container {
@@ -244,6 +311,18 @@
 <body>
     <div class="crt"></div>
     <div class="particles" id="particles"></div>
+    <div class="circuits">
+        <div class="circuit-line"></div>
+        <div class="circuit-line"></div>
+        <div class="circuit-line"></div>
+        <div class="circuit-line"></div>
+    </div>
+    <div class="mining-symbols">
+        <div class="mining-symbol">⛏️</div>
+        <div class="mining-symbol">⚡</div>
+        <div class="mining-symbol">₿</div>
+        <div class="mining-symbol">🔗</div>
+    </div>
 
     <div class="container">
         <header class="header">
@@ -252,40 +331,40 @@
         </header>
 
         <section class="hero">
-            <h2>🚀 Transformez votre ESP32 en Dashboard Cyberpunk !</h2>
+            <h2>🚀 Transform Your ESP32 into a Cyberpunk Mining Dashboard!</h2>
             <p>
-                Découvrez le futur du monitoring de mining avec ce display circulaire révolutionnaire.
-                Effets visuels époustouflants, données temps réel, et interface futuriste pour vos rigs Bitcoin.
+                Experience the future of mining monitoring with this revolutionary circular display.
+                Stunning visual effects, real-time data, and futuristic interface for your Bitcoin rigs.
             </p>
-            <p><strong>🔥 Parfait pour impressionner vos amis mineurs !</strong></p>
+            <p><strong>🔥 Perfect for impressing your mining friends!</strong></p>
         </section>
 
         <section class="features">
             <div class="feature">
-                <h3>🎨 Effets Visuels</h3>
-                <p>Bulles flottantes, anneaux pulsants, particules, scanlines CRT, glitchs aléatoires</p>
+                <h3>🎨 Visual Effects</h3>
+                <p>Floating bubbles, pulsing rings, particles, CRT scanlines, random glitches</p>
             </div>
             <div class="feature">
-                <h3>📊 Données Temps Réel</h3>
-                <p>Hashrate Braiins Pool, prix BTC, statut workers, earnings quotidiens</p>
+                <h3>📊 Real-Time Data</h3>
+                <p>Braiins Pool hashrate, BTC price, worker status, daily earnings</p>
             </div>
             <div class="feature">
-                <h3>🔄 4 Écrans Auto</h3>
-                <p>Rotation automatique toutes les 5 secondes entre les dashboards</p>
+                <h3>🔄 4 Auto Screens</h3>
+                <p>Automatic rotation every 5 seconds between dashboards</p>
             </div>
             <div class="feature">
                 <h3>🌐 Web Flasher</h3>
-                <p>Installation en 2 minutes depuis votre navigateur - Aucun logiciel requis !</p>
+                <p>Install in 2 minutes from your browser - No software required!</p>
             </div>
         </section>
 
         <section class="flasher-section">
-            <h2>⚡ Flash en 2 Minutes</h2>
-            <p>Connectez votre ESP32-C3 et cliquez ci-dessous. Le firmware se télécharge et s'installe automatiquement.</p>
+            <h2>⚡ Flash in 2 Minutes</h2>
+            <p>Connect your ESP32-C3 and click below. Firmware downloads and installs automatically.</p>
             <div class="install-btn">
                 <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
             </div>
-            <p><em>Assurez-vous que votre ESP32-C3 est connecté en USB</em></p>
+            <p><em>Make sure your ESP32-C3 is connected via USB</em></p>
         </section>
 
         <div class="links">
@@ -295,8 +374,8 @@
         </div>
 
         <footer class="footer">
-            <p>Version 1.0.1 - Créé par <a href="https://github.com/Silexperience210" target="_blank">Silexperience</a> (CyberHornet Team)</p>
-            <p>⭐ Si ce projet vous plaît, mettez une étoile sur GitHub !</p>
+            <p>Version 1.0.1 - Created by <a href="https://github.com/Silexperience210" target="_blank">Silexperience</a> (CyberHornet Team)</p>
+            <p>⭐ If you like this project, star it on GitHub!</p>
         </footer>
     </div>
 
