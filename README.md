@@ -1,47 +1,116 @@
 # 🔥 BRAIINS HUD - CYBERPUNK EDITION
 
-**ESP32-C3 1.28" Round Display - Bitcoin Mining Dashboard**
+<div align="center">
 
-![Version](https://img.shields.io/badge/version-1.0-orange)
-![Platform](https://img.shields.io/badge/platform-ESP32--C3-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![Cyberpunk HUD](https://img.shields.io/badge/Cyberpunk-HUD-orange?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![ESP32-C3](https://img.shields.io/badge/ESP32--C3-1.28%22%20Round-blue?style=for-the-badge&logo=espressif&logoColor=white)
+![Bitcoin Mining](https://img.shields.io/badge/Bitcoin-Mining-yellow?style=for-the-badge&logo=bitcoin&logoColor=white)
 
-A futuristic, cyberpunk-styled real-time Bitcoin mining dashboard for ESP32-C3 with GC9A01 240x240 round display. Monitors Braiins Pool hashrate, workers, and earnings with stunning visual effects.
+**🚀 Futuristic Bitcoin Mining Dashboard for ESP32-C3**
 
-Created by **Silexperience** (CyberHornet Team)
+*A stunning cyberpunk-themed real-time display that transforms your mining rig into a sci-fi masterpiece*
+
+[🌐 Web Flasher](https://silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/) • [📖 Documentation](#-documentation) • [🛠️ Hardware](#-hardware-requirements) • [⚡ Quick Start](#-quick-start)
+
+---
+
+## ✨ What is Braiins HUD?
+
+Transform your ESP32-C3 with a 1.28" round display into a mesmerizing **cyberpunk Bitcoin mining monitor**. This project combines:
+
+- 🎨 **Stunning Visual Effects**: Floating bubbles, pulsing rings, particle trails, CRT scanlines, and glitch effects
+- 📊 **Real-Time Data**: Live hashrate, BTC price, worker status, and earnings tracking
+- 🔄 **Auto-Rotating Screens**: 4 different dashboards cycling every 5 seconds
+- 🌐 **Easy Flashing**: Browser-based installation with our Web Flasher
+
+Perfect for miners who want to showcase their rig with style!
+
+---
+
+## ⚡ Quick Start (Choose Your Path)
+
+### 🚀 Option 1: Web Flasher (Recommended - 2 Minutes)
+
+**No software installation required!**
+
+1. **Visit**: [https://silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/](https://silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/)
+2. **Connect** your ESP32-C3 via USB-C
+3. **Click "Connect"** → Select your device
+4. **Wait** for automatic flashing (2-3 minutes)
+5. **Enjoy** your cyberpunk dashboard!
+
+*That's it! Works on any modern browser.*
+
+### 🔧 Option 2: Manual Installation (For Developers)
+
+See [Manual Installation](#-manual-installation) below for VS Code + PlatformIO setup.
+
+---
+
+## 📋 Table of Contents
+
+- [✨ Features](#-features)
+- [🎮 Demo](#-demo)
+- [🛠️ Hardware Requirements](#-hardware-requirements)
+- [📦 Manual Installation](#-manual-installation)
+- [🎨 Usage](#-usage)
+- [🔧 Configuration](#-configuration)
+- [📊 API Integration](#-api-integration)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+---
+
+## 🎮 Demo
+
+*Imagine your mining rig displaying:*
+
+```
+╔═══════════════════════╗
+║  ⬡ BRAIINS NEURAL ⬡   ║
+║                       ║
+║     ⟨ 1.2 TH/s ⟩     ║
+║   [████████░░] 85%    ║
+║                       ║
+║  ₿ $94,523  ↑ 2.3%   ║
+║  ⚡ 3 WORKERS ACTIVE   ║
+╚═══════════════════════╝
+```
+
+*With floating bubbles, pulsing rings, and smooth transitions between screens!*
 
 ---
 
 ## ✨ Features
 
-### 📊 4 Auto-Rotating Screens (5 seconds each)
-
-1. **NEURAL INTERFACE** - Main dashboard with current hashrate, BTC price, and active workers
-2. **HASHRATE GRID** - Detailed worker list with individual hashrates
-3. **24H ANALYTICS** - Statistics and performance graphs
-4. **REWARDS MATRIX** - Today's earnings and monthly projections
-
 ### 🎨 Cyberpunk Visual Effects
+- **8 Floating Bubbles** orbiting the display edges
+- **3 Pulsing Energy Rings** with breathing animation
+- **20 Particle Trails** with smooth fade effects
+- **CRT Scanlines** for retro gaming aesthetic
+- **Random Glitch Effects** (RGB color shifts)
+- **Hexagonal Corners** with neon glow
+- **Breathing Border Glow** in orange/cyan
+- **Data Stream Animations** simulating code flow
 
-- **8 Floating Bubbles** on screen edges
-- **3 Pulsing Rings** around the display
-- **20 Particle Trails** with fade effects
-- **CRT Scanlines** for retro aesthetic
-- **Random Glitch Effects** (RGB shifts)
-- **Hexagonal Corners** with glow
-- **Breathing Border Glow**
-- **Data Stream Animations**
+### 📊 4 Auto-Rotating Screens
 
-### 🚀 Technical Features
+| Screen | Description | Visual Style |
+|--------|-------------|--------------|
+| **NEURAL INTERFACE** | Main dashboard with hashrate, BTC price, workers | Central data hub with rings |
+| **HASHRATE GRID** | Individual worker hashrates | Grid layout with progress bars |
+| **24H ANALYTICS** | Performance statistics and graphs | Charts and metrics |
+| **REWARDS MATRIX** | Daily earnings and projections | Vault-style with BTC symbols |
 
-- Real-time Braiins Pool API integration
-- Live BTC price from CoinGecko
-- Auto-reconnect WiFi handling
-- 20 FPS smooth animations
-- Color palette: Orange/Red/Cyan on Black
-- Worker status monitoring
-- 24h hashrate tracking
-- Earnings calculator (daily/monthly)
+### 🚀 Technical Capabilities
+- ⚡ **Real-time Braiins Pool API** integration
+- 💰 **Live BTC price** from CoinGecko
+- 🔄 **Auto-reconnect WiFi** handling
+- 🎬 **20 FPS smooth animations**
+- 🎨 **Cyberpunk color palette**: Orange/Red/Cyan on Black
+- 👥 **Worker monitoring** with status indicators
+- 📈 **24h hashrate tracking**
+- 💵 **Earnings calculator** (daily/monthly projections)
 
 ---
 
@@ -108,17 +177,6 @@ Edit `src/config.h`:
 2. Click the **Upload** button (→) in PlatformIO toolbar
 3. Wait for compilation and upload (2-3 minutes first time)
 4. The device will reboot and show the boot screen
-
-### Alternative: Web Flasher (No Software Installation Required)
-
-For users who prefer not to install development tools, you can flash the firmware directly from your web browser:
-
-1. Visit the [Web Flasher Page](https://Silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/)
-2. Connect your ESP32-C3 device via USB
-3. Click the "Connect" button and select your device
-4. The firmware will be automatically downloaded and flashed
-
-**Note:** Web flashing requires a modern browser with Web Serial support (Chrome/Edge recommended).
 
 ---
 
