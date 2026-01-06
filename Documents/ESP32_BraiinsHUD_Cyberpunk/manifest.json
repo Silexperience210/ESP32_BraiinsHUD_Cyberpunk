@@ -1,12 +1,21 @@
 {
   "name": "ESP32_BraiinsHUD_Cyberpunk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "new_install_prompt_erase": true,
   "builds": [
     {
       "chipFamily": "ESP32-C3",
       "parts": [
         { "path": "merged-firmware.bin", "offset": 0 }
+      ]
+    },
+    {
+      "chipFamily": "ESP32-C3",
+      "parts": [
+        { "path": "bootloader.bin", "offset": 4096 },
+        { "path": "partitions.bin", "offset": 32768 },
+        { "path": "boot_app0.bin", "offset": 57344 },
+        { "path": "firmware.bin", "offset": 65536 }
       ]
     }
   ]
