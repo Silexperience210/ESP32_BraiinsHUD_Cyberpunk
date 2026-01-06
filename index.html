@@ -74,8 +74,8 @@
             100% { transform: translateX(calc(100vw + 200px)); opacity: 0; }
         }
 
-        /* Mining symbols */
-        .mining-symbols {
+        /* Tech symbols */
+        .tech-symbols {
             position: fixed;
             top: 0;
             left: 0;
@@ -86,39 +86,39 @@
             opacity: 0.05;
         }
 
-        .mining-symbol {
+        .tech-symbol {
             position: absolute;
             color: #ff6600;
             font-size: 24px;
-            animation: mine 4s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
             font-weight: bold;
         }
 
-        .mining-symbol:nth-child(1) {
+        .tech-symbol:nth-child(1) {
             top: 10%;
             left: 10%;
             animation-delay: 0s;
         }
 
-        .mining-symbol:nth-child(2) {
+        .tech-symbol:nth-child(2) {
             top: 20%;
             right: 15%;
             animation-delay: 1s;
         }
 
-        .mining-symbol:nth-child(3) {
+        .tech-symbol:nth-child(3) {
             bottom: 25%;
             left: 20%;
             animation-delay: 2s;
         }
 
-        .mining-symbol:nth-child(4) {
+        .tech-symbol:nth-child(4) {
             bottom: 15%;
             right: 10%;
             animation-delay: 3s;
         }
 
-        @keyframes mine {
+        @keyframes float {
             0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
             50% { transform: scale(1.2) rotate(5deg); opacity: 0.8; }
         }
@@ -317,11 +317,11 @@
         <div class="circuit-line"></div>
         <div class="circuit-line"></div>
     </div>
-    <div class="mining-symbols">
-        <div class="mining-symbol">⛏️</div>
-        <div class="mining-symbol">⚡</div>
-        <div class="mining-symbol">₿</div>
-        <div class="mining-symbol">🔗</div>
+    <div class="tech-symbols">
+        <div class="tech-symbol">⚙️</div>
+        <div class="tech-symbol">🔌</div>
+        <div class="tech-symbol">💻</div>
+        <div class="tech-symbol">🔧</div>
     </div>
 
     <div class="container">
@@ -331,12 +331,12 @@
         </header>
 
         <section class="hero">
-            <h2>🚀 Transform Your ESP32 into a Cyberpunk Mining Dashboard!</h2>
+            <h2>🚀 Transform Your ESP32 into a Cyberpunk Display!</h2>
             <p>
-                Experience the future of mining monitoring with this revolutionary circular display.
-                Stunning visual effects, real-time data, and futuristic interface for your Bitcoin rigs.
+                Experience the future of embedded displays with this revolutionary circular TFT.
+                Stunning visual effects, real-time data visualization, and futuristic interface for your projects.
             </p>
-            <p><strong>🔥 Perfect for impressing your mining friends!</strong></p>
+            <p><strong>🔥 Perfect for makers, developers, and tech enthusiasts!</strong></p>
         </section>
 
         <section class="features">
@@ -346,7 +346,7 @@
             </div>
             <div class="feature">
                 <h3>📊 Real-Time Data</h3>
-                <p>Braiins Pool hashrate, BTC price, worker status, daily earnings</p>
+                <p>Live sensor data, system metrics, API feeds, custom dashboards</p>
             </div>
             <div class="feature">
                 <h3>🔄 4 Auto Screens</h3>
