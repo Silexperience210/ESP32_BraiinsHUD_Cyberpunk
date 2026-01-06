@@ -75,7 +75,7 @@ Created by **Silexperience** (CyberHornet Team)
 ### 2. Clone/Download Project
 
 ```bash
-git clone https://github.com/yourusername/ESP32_BraiinsHUD_Cyberpunk.git
+git clone https://github.com/Silexperience210/ESP32_BraiinsHUD_Cyberpunk.git
 cd ESP32_BraiinsHUD_Cyberpunk
 ```
 
@@ -113,7 +113,7 @@ Edit `src/config.h`:
 
 For users who prefer not to install development tools, you can flash the firmware directly from your web browser:
 
-1. Visit the [Web Flasher Page](https://Silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/webflasher/)
+1. Visit the [Web Flasher Page](https://Silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/)
 2. Connect your ESP32-C3 device via USB
 3. Click the "Connect" button and select your device
 4. The firmware will be automatically downloaded and flashed
