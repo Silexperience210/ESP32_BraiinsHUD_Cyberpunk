@@ -428,6 +428,28 @@ Planned features for v2.0:
 
 ---
 
+## 💰 Support the Project
+
+If you find this project useful, consider supporting its development:
+
+### ₿ Bitcoin Donations
+
+**Main Donation Address:**
+```
+bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+```
+
+**Lightning Network (Faster payments):**
+```
+lnbc1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x86fux2ypatgddc6k63n7erqz25le42c4u4ecky03ylcqca784w
+```
+
+**QR Codes:**
+- [Bitcoin Address QR](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh)
+- [Lightning Invoice QR](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=lnbc1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmwwd5kgetjypeh2ursdae8g6twvus8g6rfwvs8qun0dfjkxaq8rkx3yf5tcsyz3d73gafnh3cax9rn449d9p5uxz9ezhhypd0elx87sjle52x86fux2ypatgddc6k63n7erqz25le42c4u4ecky03ylcqca784w)
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! To contribute:
