@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 BraiinsHUD Cyberpunk Web Flasher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ESP32 BraiinsHUD Cyberpunk Firmware Flasher</h1>
+        <p>Click the button below to flash the firmware to your ESP32-C3 device.</p>
+        <p><strong>Note:</strong> Make sure your device is connected via USB and that you have selected the correct port.</p>
+        <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+    </div>
+
+    <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+</body>
+</html>
