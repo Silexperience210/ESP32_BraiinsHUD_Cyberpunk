@@ -23,7 +23,10 @@ bool SettingsManager::load() {
     strncpy(settings.wifi_password, pass.c_str(), sizeof(settings.wifi_password) - 1);
     strncpy(settings.braiins_token, token.c_str(), sizeof(settings.braiins_token) - 1);
     strncpy(settings.braiins_username, user.c_str(), sizeof(settings.braiins_username) - 1);
-    
+
+    String worker = prefs.getString("worker_name", "");
+    strncpy(settings.worker_name, worker.c_str(), sizeof(settings.worker_name) - 1);
+
     settings.brightness = prefs.getUChar("brightness", DEFAULT_BRIGHTNESS);
     settings.screen_duration = prefs.getUShort("screen_dur", DEFAULT_SCREEN_DURATION);
   }
@@ -34,6 +37,7 @@ bool SettingsManager::load() {
   if (settings.configured) {
     Serial.printf("[SETTINGS] SSID: %s\n", settings.wifi_ssid);
     Serial.printf("[SETTINGS] User: %s\n", settings.braiins_username);
+    Serial.printf("[SETTINGS] Worker: %s\n", strlen(settings.worker_name) > 0 ? settings.worker_name : "(aggregate mode)");
   }
   
   return settings.configured;
@@ -47,6 +51,7 @@ bool SettingsManager::save() {
   prefs.putString("wifi_pass", settings.wifi_password);
   prefs.putString("api_token", settings.braiins_token);
   prefs.putString("username", settings.braiins_username);
+  prefs.putString("worker_name", settings.worker_name);
   prefs.putUChar("brightness", settings.brightness);
   prefs.putUShort("screen_dur", settings.screen_duration);
   
@@ -87,6 +92,10 @@ void SettingsManager::setBraiinsToken(const char* token) {
 
 void SettingsManager::setBraiinsUsername(const char* username) {
   strncpy(settings.braiins_username, username, sizeof(settings.braiins_username) - 1);
+}
+
+void SettingsManager::setWorkerName(const char* name) {
+  strncpy(settings.worker_name, name, sizeof(settings.worker_name) - 1);
 }
 
 void SettingsManager::setBrightness(uint8_t brightness) {

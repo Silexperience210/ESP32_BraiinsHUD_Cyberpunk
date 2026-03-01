@@ -41,6 +41,16 @@ struct BTCPrice {
   bool valid;
 };
 
+// Individual worker monitoring (single-worker mode)
+struct SingleWorkerData {
+  char name[48];            // Full name from API: "username.workername"
+  float hashrate_5m;        // 5-min hashrate (TH/s)
+  float hashrate_1h;        // 60-min hashrate (TH/s)
+  float hashrate_scoring;   // Scoring hashrate (TH/s)
+  bool online;              // true = active, false = offline/disabled
+  bool found;               // true if target worker was found in API response
+};
+
 // ============================================
 // API MANAGER CLASS
 // ============================================
@@ -61,10 +71,17 @@ class APIManager {
     String wifiSSID;
     String wifiPassword;
     String apiToken;
-    
+    String targetWorkerName;  // Worker to monitor (empty = aggregate mode)
+
+    // Per-worker data (single-worker mode)
+    SingleWorkerData targetWorker;
+    unsigned long lastWorkerUpdate;
+
     bool fetchBraiinsData();
     bool fetchBTCPrice();
-    bool parseJsonResponse(String json);
+    bool fetchWorkerData();
+    bool parseJsonResponse(String& json);
+    bool parseWorkerResponse(String& json);
     
   public:
     APIManager();
@@ -90,10 +107,15 @@ class APIManager {
     WorkerData* getWorkers();
     int getWorkerCount();
     
+    // Single-worker mode
+    void setTargetWorker(const char* name);
+    bool hasTargetWorker() { return targetWorkerName.length() > 0; }
+    SingleWorkerData getTargetWorker() { return targetWorker; }
+
     // Connection status
     bool isWiFiConnected();
     bool isBraiinsConnected();
-    
+
     // WiFi signal strength
     int getWiFiRSSI() { return WiFi.RSSI(); }
 };
