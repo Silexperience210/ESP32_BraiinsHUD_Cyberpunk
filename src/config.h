@@ -17,6 +17,8 @@
 #define BRAIINS_API_HOST "pool.braiins.com"
 #define BRAIINS_API_PATH "/accounts/profile/json/btc/"
 // Note: Full URL will be: https://pool.braiins.com/accounts/profile/json/btc/
+#define WORKERS_API_PATH "/accounts/workers/json/btc/"
+// Workers endpoint: https://pool.braiins.com/accounts/workers/json/btc/
 
 // ============================================
 // BTC PRICE API

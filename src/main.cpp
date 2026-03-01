@@ -68,21 +68,29 @@ void formatBTC(float btc, char* buffer) {
 
 // Get alert color based on system status
 uint16_t getAlertBorderColor() {
+  // Single-worker mode: alert is based on that specific worker
+  if (api.hasTargetWorker()) {
+    SingleWorkerData sw = api.getTargetWorker();
+    if (sw.found && !sw.online) {
+      return COLOR_SECONDARY;  // Red: target worker is offline
+    }
+    // Hashrate drop detection for single worker
+    if (sw.found && previousHashrate > 0 && sw.hashrate_5m > 0) {
+      float drop = (previousHashrate - sw.hashrate_5m) / previousHashrate;
+      if (drop > 0.2) return COLOR_PRIMARY;  // Orange: >20% drop
+    }
+    return 0;  // Target worker is fine
+  }
+
+  // Aggregate mode: alert if any worker offline
   BraiinsData data = api.getBraiinsData();
-  
-  // Red: workers offline
   if (data.workers_offline > 0) {
     return COLOR_SECONDARY;  // Red
   }
-  
-  // Orange: hashrate dropped more than 20%
   if (previousHashrate > 0 && data.hashrate_1h > 0) {
     float drop = (previousHashrate - data.hashrate_1h) / previousHashrate;
-    if (drop > 0.2) {
-      return COLOR_PRIMARY;  // Orange (warning)
-    }
+    if (drop > 0.2) return COLOR_PRIMARY;  // Orange
   }
-  
   return 0;  // No alert
 }
 
@@ -356,86 +364,155 @@ void drawScreenRewards() {
   tft.drawString(totalStr, CENTER_X, 215);
 }
 
-void drawScreenWorkers() {
-  // Only draw once per screen switch
-  if (currentScreen == lastDrawnScreen && !forceRedraw) return;
-  
-  BraiinsData data = api.getBraiinsData();
-  
+// ---- Single-Worker focused screen ----
+void drawScreenSingleWorker() {
+  SingleWorkerData sw = api.getTargetWorker();
+
   tft.fillScreen(COLOR_BG);
-  
-  // Border color based on worker status
+
+  // Border: green = online, red = offline, dim = not found yet
+  uint16_t borderColor = sw.found ? (sw.online ? COLOR_SUCCESS : COLOR_SECONDARY) : COLOR_DIM;
+  tft.drawCircle(CENTER_X, CENTER_Y, 115, borderColor);
+  tft.drawCircle(CENTER_X, CENTER_Y, 118, COLOR_DIM);
+
+  tft.setTextDatum(middle_center);
+
+  // Worker name (truncated to fit display width)
+  // Extract short name from "username.workername" if dot present
+  String fullName = String(sw.name);
+  int dotIdx = fullName.lastIndexOf('.');
+  String shortName = (dotIdx >= 0) ? fullName.substring(dotIdx + 1) : fullName;
+  if (shortName.length() == 0) shortName = "WORKER";
+
+  tft.setTextColor(COLOR_ACCENT, COLOR_BG);
+  tft.setTextSize(1);
+  tft.drawString("TARGET WORKER", CENTER_X, 30);
+
+  tft.setTextColor(COLOR_TEXT, COLOR_BG);
+  tft.setTextSize(2);
+  tft.drawString(shortName.c_str(), CENTER_X, 55);
+
+  if (!sw.found) {
+    // Worker not found yet
+    tft.setTextColor(COLOR_DIM, COLOR_BG);
+    tft.setTextSize(1);
+    tft.drawString("Waiting for data...", CENTER_X, CENTER_Y);
+    tft.drawString("Check worker name", CENTER_X, CENTER_Y + 20);
+  } else {
+    // Status badge
+    uint16_t statusColor = sw.online ? COLOR_SUCCESS : COLOR_SECONDARY;
+    const char* statusLabel = sw.online ? "ONLINE" : "OFFLINE";
+    tft.setTextColor(statusColor, COLOR_BG);
+    tft.setTextSize(2);
+    tft.drawString(statusLabel, CENTER_X, 85);
+
+    // Current hashrate (5m) — main focus
+    tft.setTextColor(COLOR_DIM, COLOR_BG);
+    tft.setTextSize(1);
+    tft.drawString("HASHRATE (5m)", CENTER_X, CENTER_Y - 30);
+
+    char hashrateStr[20];
+    formatHashrate(sw.hashrate_5m, hashrateStr);
+    tft.setTextColor(COLOR_PRIMARY, COLOR_BG);
+    tft.setTextSize(3);
+    tft.drawString(hashrateStr, CENTER_X, CENTER_Y);
+
+    // 1h average
+    tft.setTextDatum(middle_left);
+    tft.setTextColor(COLOR_DIM, COLOR_BG);
+    tft.setTextSize(1);
+    tft.drawString("1H AVG", 30, CENTER_Y + 40);
+    char hr1h[20];
+    formatHashrate(sw.hashrate_1h, hr1h);
+    tft.setTextColor(COLOR_TEXT, COLOR_BG);
+    tft.drawString(hr1h, 30, CENTER_Y + 55);
+
+    // Scoring hashrate
+    tft.setTextDatum(middle_right);
+    tft.setTextColor(COLOR_DIM, COLOR_BG);
+    tft.drawString("SCORING", 210, CENTER_Y + 40);
+    char hrScore[20];
+    formatHashrate(sw.hashrate_scoring, hrScore);
+    tft.setTextColor(COLOR_ACCENT, COLOR_BG);
+    tft.drawString(hrScore, 210, CENTER_Y + 55);
+  }
+
+  // Connection dot bottom
+  tft.setTextDatum(middle_center);
+  tft.fillCircle(CENTER_X, 215, 4, api.isBraiinsConnected() ? COLOR_SUCCESS : COLOR_SECONDARY);
+}
+
+// ---- Aggregate workers screen (original) ----
+void drawScreenWorkersAggregate() {
+  BraiinsData data = api.getBraiinsData();
+
+  tft.fillScreen(COLOR_BG);
+
   uint16_t borderColor = (data.workers_offline > 0) ? COLOR_SECONDARY : COLOR_ACCENT;
   tft.drawCircle(CENTER_X, CENTER_Y, 115, borderColor);
   tft.drawCircle(CENTER_X, CENTER_Y, 118, COLOR_DIM);
-  
-  // Title
+
   tft.setTextDatum(middle_center);
   tft.setTextColor(COLOR_ACCENT, COLOR_BG);
   tft.setTextSize(1);
   tft.drawString("WORKERS", CENTER_X, 35);
-  
-  // Total workers summary
+
   int y = 65;
-  
-  // Online workers (green)
-  tft.setTextDatum(middle_center);
+
   tft.setTextColor(COLOR_SUCCESS, COLOR_BG);
   tft.setTextSize(3);
   tft.drawString(String(data.workers_active).c_str(), CENTER_X, y);
-  
+
   tft.setTextColor(COLOR_DIM, COLOR_BG);
   tft.setTextSize(1);
   tft.drawString("ONLINE", CENTER_X, y + 25);
-  
+
   y += 55;
-  
-  // Separator line
   tft.drawFastHLine(60, y, 120, COLOR_DIM);
-  
   y += 20;
-  
-  // Offline workers
+
   int boxWidth = 80;
   int boxHeight = 50;
   int spacing = 10;
   int startX = CENTER_X - boxWidth - spacing/2;
-  
+
   // Offline box
-  if (data.workers_offline > 0) {
-    tft.drawRect(startX, y, boxWidth, boxHeight, COLOR_SECONDARY);
-    tft.setTextColor(COLOR_SECONDARY, COLOR_BG);
-  } else {
-    tft.drawRect(startX, y, boxWidth, boxHeight, COLOR_DIM);
-    tft.setTextColor(COLOR_DIM, COLOR_BG);
-  }
+  tft.drawRect(startX, y, boxWidth, boxHeight,
+    data.workers_offline > 0 ? COLOR_SECONDARY : COLOR_DIM);
+  tft.setTextColor(data.workers_offline > 0 ? COLOR_SECONDARY : COLOR_DIM, COLOR_BG);
   tft.setTextSize(2);
   tft.setTextDatum(middle_center);
   tft.drawString(String(data.workers_offline).c_str(), startX + boxWidth/2, y + 18);
   tft.setTextSize(1);
   tft.drawString("OFFLINE", startX + boxWidth/2, y + 38);
-  
+
   // Disabled box
   startX = CENTER_X + spacing/2;
-  if (data.workers_disabled > 0) {
-    tft.drawRect(startX, y, boxWidth, boxHeight, COLOR_WARNING);
-    tft.setTextColor(COLOR_WARNING, COLOR_BG);
-  } else {
-    tft.drawRect(startX, y, boxWidth, boxHeight, COLOR_DIM);
-    tft.setTextColor(COLOR_DIM, COLOR_BG);
-  }
+  tft.drawRect(startX, y, boxWidth, boxHeight,
+    data.workers_disabled > 0 ? COLOR_WARNING : COLOR_DIM);
+  tft.setTextColor(data.workers_disabled > 0 ? COLOR_WARNING : COLOR_DIM, COLOR_BG);
   tft.setTextSize(2);
   tft.drawString(String(data.workers_disabled).c_str(), startX + boxWidth/2, y + 18);
   tft.setTextSize(1);
   tft.drawString("DISABLED", startX + boxWidth/2, y + 38);
-  
-  // Total at bottom
+
   tft.setTextDatum(middle_center);
   tft.setTextColor(COLOR_DIM, COLOR_BG);
   tft.setTextSize(1);
   char totalStr[30];
   sprintf(totalStr, "Total: %d workers", data.workers_total);
   tft.drawString(totalStr, CENTER_X, 210);
+}
+
+// ---- Dispatcher: single or aggregate depending on config ----
+void drawScreenWorkers() {
+  if (currentScreen == lastDrawnScreen && !forceRedraw) return;
+
+  if (api.hasTargetWorker()) {
+    drawScreenSingleWorker();
+  } else {
+    drawScreenWorkersAggregate();
+  }
 }
 
 // ============================================
@@ -457,7 +534,7 @@ void drawBootScreen() {
   
   tft.setTextColor(COLOR_DIM, COLOR_BG);
   tft.setTextSize(1);
-  tft.drawString("v1.0", CENTER_X, CENTER_Y + 40);
+  tft.drawString("v2.1 - Single Worker", CENTER_X, CENTER_Y + 40);
   
   delay(1500);
 }
@@ -568,9 +645,10 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   
-  Serial.println("\n===================");
-  Serial.println("BRAIINS HUD v2.0");
-  Serial.println("===================\n");
+  Serial.println("\n=========================");
+  Serial.println("BRAIINS HUD v2.1");
+  Serial.println("Single-Worker Edition");
+  Serial.println("=========================\n");
   
   // Initialize display
   Serial.println("[BOOT] Display init...");
@@ -608,7 +686,12 @@ void setup() {
     settings.getWifiPassword(),
     settings.getBraiinsToken()
   );
-  
+
+  // Configure single-worker mode if a target was set in the portal
+  if (strlen(settings.getWorkerName()) > 0) {
+    api.setTargetWorker(settings.getWorkerName());
+  }
+
   // Connect WiFi
   Serial.println("[BOOT] WiFi connecting...");
   drawWiFiScreen(true, settings.getWifiSSID());
@@ -770,10 +853,13 @@ void loop() {
   
   // Update API data
   if (now - lastApiUpdate >= API_UPDATE_INTERVAL) {
-    // Save previous hashrate for drop detection
-    BraiinsData oldData = api.getBraiinsData();
-    if (oldData.hashrate_1h > 0) {
-      previousHashrate = oldData.hashrate_1h;
+    // Save previous hashrate for drop detection (worker-specific or aggregate)
+    if (api.hasTargetWorker()) {
+      SingleWorkerData sw = api.getTargetWorker();
+      if (sw.found && sw.hashrate_5m > 0) previousHashrate = sw.hashrate_5m;
+    } else {
+      BraiinsData oldData = api.getBraiinsData();
+      if (oldData.hashrate_1h > 0) previousHashrate = oldData.hashrate_1h;
     }
     
     Serial.println("[API] Updating...");

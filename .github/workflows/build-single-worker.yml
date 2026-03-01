@@ -1,0 +1,215 @@
+name: Build & Deploy Single-Worker Edition
+
+on:
+  push:
+    branches:
+      - feature/single-worker
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # ── 1. Checkout feature branch (source code) ──────────────────────────
+      - name: Checkout feature/single-worker
+        uses: actions/checkout@v4
+        with:
+          ref: feature/single-worker
+          path: src-branch
+
+      # ── 2. Python + PlatformIO ─────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PlatformIO & esptool
+        run: pip install platformio esptool
+
+      # ── 3. Build firmware ──────────────────────────────────────────────────
+      - name: Build firmware with PlatformIO
+        working-directory: src-branch
+        run: pio run
+
+      # ── 4. Create merged binary (single-file flash) ────────────────────────
+      - name: Locate boot_app0.bin
+        id: boot_app0
+        run: |
+          BOOT=$(find ~/.platformio -name "boot_app0.bin" | head -1)
+          echo "path=$BOOT" >> $GITHUB_OUTPUT
+          echo "Found boot_app0 at: $BOOT"
+
+      - name: Merge firmware parts into single binary
+        working-directory: src-branch
+        run: |
+          python -m esptool --chip esp32c3 merge_bin \
+            --output merged-firmware.bin \
+            0x0000 .pio/build/esp32-2424S012C/bootloader.bin \
+            0x8000 .pio/build/esp32-2424S012C/partitions.bin \
+            0xe000 "${{ steps.boot_app0.outputs.path }}" \
+            0x10000 .pio/build/esp32-2424S012C/firmware.bin
+          echo "=== Binary sizes ==="
+          ls -lh merged-firmware.bin .pio/build/esp32-2424S012C/firmware.bin
+
+      # ── 5. Checkout main branch for deployment ─────────────────────────────
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-branch
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 6. Copy webflasher + binaries into single-worker/ subfolder ────────
+      - name: Deploy to main/single-worker/
+        run: |
+          mkdir -p main-branch/single-worker
+
+          # Copy compiled binaries
+          cp src-branch/merged-firmware.bin  main-branch/single-worker/merged-firmware.bin
+          cp src-branch/.pio/build/esp32-2424S012C/firmware.bin    main-branch/single-worker/firmware.bin
+          cp src-branch/.pio/build/esp32-2424S012C/bootloader.bin  main-branch/single-worker/bootloader.bin
+          cp src-branch/.pio/build/esp32-2424S012C/partitions.bin  main-branch/single-worker/partitions.bin
+
+          # Write manifest.json (relative paths = served from same GitHub Pages folder)
+          cat > main-branch/single-worker/manifest.json << 'MANIFEST'
+          {
+            "name": "BraiinsHUD - Single Worker Edition",
+            "version": "2.1.0",
+            "new_install_prompt_erase": true,
+            "builds": [
+              {
+                "chipFamily": "ESP32-C3",
+                "parts": [
+                  { "path": "merged-firmware.bin", "offset": 0 }
+                ]
+              },
+              {
+                "chipFamily": "ESP32-C3",
+                "parts": [
+                  { "path": "bootloader.bin",  "offset": 4096  },
+                  { "path": "partitions.bin",  "offset": 32768 },
+                  { "path": "firmware.bin",    "offset": 65536 }
+                ]
+              }
+            ]
+          }
+          MANIFEST
+
+          # Write dedicated web flasher page for this edition
+          cat > main-branch/single-worker/index.html << 'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>BraiinsHUD - Single Worker Edition Flasher</title>
+            <style>
+              * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+              body { background: #1a1a2e; color: #eee; margin: 0; padding: 20px; min-height: 100vh; }
+              .container { max-width: 600px; margin: 0 auto; }
+              h1 { color: #ff6600; text-align: center; }
+              .badge { display: inline-block; background: #00ffff20; color: #00ffff; border: 1px solid #00ffff;
+                       padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 20px; }
+              .card { background: #16213e; padding: 20px; border-radius: 12px; margin-bottom: 20px;
+                      border: 1px solid #333; }
+              .feature { display: flex; align-items: flex-start; margin-bottom: 12px; }
+              .feature .icon { font-size: 20px; margin-right: 12px; flex-shrink: 0; }
+              .feature p { margin: 0; font-size: 14px; color: #aaa; }
+              .feature p strong { color: #eee; }
+              .flash-btn { text-align: center; margin: 30px 0; }
+              a { color: #00ffff; }
+              .back { text-align: center; margin-top: 20px; font-size: 13px; }
+              .version { text-align: center; color: #444; font-size: 12px; margin-top: 30px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div style="text-align:center; font-size:48px; margin-bottom:10px;">⛏️</div>
+              <h1>BraiinsHUD</h1>
+              <div style="text-align:center; margin-bottom:20px;">
+                <span class="badge">Single Worker Edition v2.1</span>
+              </div>
+
+              <div class="card">
+                <h2 style="color:#00ffff; margin-top:0;">What's new in this edition</h2>
+                <div class="feature">
+                  <div class="icon">🎯</div>
+                  <p><strong>Single Worker Focus</strong><br>
+                  Monitor one specific worker with its own dedicated screen — name, hashrate, online/offline status.</p>
+                </div>
+                <div class="feature">
+                  <div class="icon">🔔</div>
+                  <p><strong>Worker-specific Alerts</strong><br>
+                  Red border blinks only when YOUR worker goes offline, not when others do.</p>
+                </div>
+                <div class="feature">
+                  <div class="icon">⚙️</div>
+                  <p><strong>Configurable from Setup Portal</strong><br>
+                  Enter your worker name directly in the WiFi setup page — no recompilation needed.</p>
+                </div>
+                <div class="feature">
+                  <div class="icon">↩️</div>
+                  <p><strong>Backwards Compatible</strong><br>
+                  Leave worker name empty → displays aggregate stats (same as original).</p>
+                </div>
+              </div>
+
+              <div class="flash-btn">
+                <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+              </div>
+
+              <div class="card" style="font-size:13px; color:#888;">
+                <strong style="color:#eee;">After flashing:</strong><br>
+                1. Connect to WiFi AP: <strong style="color:#ff6600;">BraiinsHUD-Setup</strong> (pass: braiins123)<br>
+                2. Open browser → <strong style="color:#ff6600;">192.168.4.1</strong><br>
+                3. Fill in your WiFi, Braiins API token, and <strong style="color:#00ffff;">Worker Name</strong> field<br>
+                4. Save → device restarts and monitors your worker
+              </div>
+
+              <div class="back">
+                <a href="..">← Back to original BraiinsHUD</a> &nbsp;|&nbsp;
+                <a href="https://github.com/Silexperience210/ESP32_BraiinsHUD_Cyberpunk/tree/feature/single-worker" target="_blank">📁 Source Code</a>
+              </div>
+              <div class="version">Built automatically from feature/single-worker branch by GitHub Actions</div>
+            </div>
+            <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+          </body>
+          </html>
+          HTML
+
+      # ── 7. Copy updated index.html (dual-choice flasher) to main root ────────
+      - name: Update root index.html with dual-choice flasher
+        run: |
+          # The feature branch has the updated index.html with both edition buttons
+          cp src-branch/index.html main-branch/index.html
+
+      # ── 8. Commit and push to main ─────────────────────────────────────────
+      - name: Commit and push to main
+        working-directory: main-branch
+        run: |
+          git config user.name  "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add single-worker/ index.html
+          git diff --cached --stat
+          # Only commit if there are actual changes
+          git diff --cached --quiet || git commit -m "Deploy: Single Worker v2.1 + dual-choice flasher [skip ci]"
+          git push origin main
+
+      # ── 9. Summary ─────────────────────────────────────────────────────────
+      - name: Build Summary
+        run: |
+          echo "========================================"
+          echo "Build & Deploy Complete!"
+          echo "========================================"
+          echo ""
+          echo "Main flasher (both versions):"
+          echo "https://silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/"
+          echo ""
+          echo "Single Worker dedicated page:"
+          echo "https://silexperience210.github.io/ESP32_BraiinsHUD_Cyberpunk/single-worker/"
+          echo ""
+          echo "Firmware sizes:"
+          ls -lh src-branch/merged-firmware.bin
+          ls -lh src-branch/.pio/build/esp32-2424S012C/firmware.bin

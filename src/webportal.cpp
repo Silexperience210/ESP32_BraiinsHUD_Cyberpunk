@@ -65,28 +65,31 @@ void WebPortal::handleScan() {
 }
 
 void WebPortal::handleSave() {
-  String ssid = server.arg("ssid");
-  String password = server.arg("password");
-  String token = server.arg("token");
-  String username = server.arg("username");
-  String brightness = server.arg("brightness");
-  String duration = server.arg("duration");
-  
+  String ssid        = server.arg("ssid");
+  String password    = server.arg("password");
+  String token       = server.arg("token");
+  String username    = server.arg("username");
+  String workerName  = server.arg("worker_name");
+  String brightness  = server.arg("brightness");
+  String duration    = server.arg("duration");
+
   Serial.println("[PORTAL] Saving configuration...");
   Serial.printf("[PORTAL] SSID: %s\n", ssid.c_str());
   Serial.printf("[PORTAL] Token: %s***\n", token.substring(0, 4).c_str());
-  
+  Serial.printf("[PORTAL] Worker: %s\n", workerName.length() > 0 ? workerName.c_str() : "(aggregate)");
+
   // Validate required fields
   if (ssid.length() == 0 || token.length() == 0) {
     server.send(400, "text/html", "<html><body><h1>Error: SSID and Token are required!</h1><a href='/'>Back</a></body></html>");
     return;
   }
-  
+
   // Save settings
   settingsManager->setWifiSSID(ssid.c_str());
   settingsManager->setWifiPassword(password.c_str());
   settingsManager->setBraiinsToken(token.c_str());
   settingsManager->setBraiinsUsername(username.length() > 0 ? username.c_str() : "Miner");
+  settingsManager->setWorkerName(workerName.c_str());  // Empty = aggregate mode
   settingsManager->setBrightness(brightness.length() > 0 ? brightness.toInt() : DEFAULT_BRIGHTNESS);
   settingsManager->setScreenDuration(duration.length() > 0 ? duration.toInt() : DEFAULT_SCREEN_DURATION);
   settingsManager->setConfigured(true);
@@ -164,7 +167,14 @@ String WebPortal::getConfigPage() {
       
       <label>Username <span class="optional">(optional - for display)</span></label>
       <input type="text" name="username" placeholder="Your mining name">
-      
+
+      <label>Worker Name <span class="optional">(optional - leave empty to show all workers)</span></label>
+      <input type="text" name="worker_name" id="worker_name" placeholder="ex: bitaxe_01, oct, miner1"
+             style="border-color: #00ffff;">
+      <div style="font-size:11px; color:#555; margin-top:-10px; margin-bottom:15px;">
+        Enter a single worker name to monitor it individually. Leave empty for aggregate stats.
+      </div>
+
       <h2>⚙️ Display Settings</h2>
       <label>Brightness</label>
       <input type="range" name="brightness" min="10" max="255" value="255" oninput="updateBrightness(this.value)">
