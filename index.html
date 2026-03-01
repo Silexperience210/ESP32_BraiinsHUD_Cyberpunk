@@ -211,35 +211,118 @@
         }
 
         .flasher-section {
-            background: rgba(255, 0, 102, 0.1);
-            border: 2px solid #ff0066;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
             margin-bottom: 40px;
-            animation: borderGlow 2s ease-in-out infinite alternate;
         }
 
-        @keyframes borderGlow {
-            from { border-color: #ff0066; box-shadow: 0 0 15px rgba(255, 0, 102, 0.5); }
-            to { border-color: #ff6600; box-shadow: 0 0 25px rgba(255, 102, 0, 0.8); }
-        }
-
-        .flasher-section h2 {
+        .flasher-section > h2 {
             color: #ff6600;
-            margin-bottom: 20px;
+            text-align: center;
             font-size: 2em;
+            margin-bottom: 8px;
         }
+
+        .flasher-section > p {
+            text-align: center;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        .edition-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .edition-cards { grid-template-columns: 1fr; }
+        }
+
+        .edition-card {
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .edition-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .edition-card.v1 {
+            background: rgba(255, 102, 0, 0.08);
+            border: 2px solid #ff6600;
+            box-shadow: 0 0 18px rgba(255, 102, 0, 0.25);
+            animation: borderGlowV1 2s ease-in-out infinite alternate;
+        }
+
+        .edition-card.v2 {
+            background: rgba(0, 255, 255, 0.08);
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
+            animation: borderGlowV2 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes borderGlowV1 {
+            from { box-shadow: 0 0 12px rgba(255, 102, 0, 0.2); }
+            to   { box-shadow: 0 0 28px rgba(255, 102, 0, 0.6); }
+        }
+
+        @keyframes borderGlowV2 {
+            from { box-shadow: 0 0 12px rgba(0, 255, 255, 0.2); }
+            to   { box-shadow: 0 0 28px rgba(0, 255, 255, 0.6); }
+        }
+
+        .edition-card .edition-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .v1 .edition-badge { background: rgba(255,102,0,0.2); color: #ff6600; border: 1px solid #ff6600; }
+        .v2 .edition-badge { background: rgba(0,255,255,0.2); color: #00ffff; border: 1px solid #00ffff; }
+
+        .edition-card h3 { font-size: 1.3em; margin-bottom: 10px; }
+        .v1 h3 { color: #ff6600; }
+        .v2 h3 { color: #00ffff; }
+
+        .edition-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 12px 0 18px;
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+
+        .edition-card ul li::before { content: "› "; color: #555; }
+        .v1 ul li.highlight::before { color: #ff6600; }
+        .v2 ul li.highlight::before { color: #00ffff; }
+        .v1 ul li.highlight { color: #eee; }
+        .v2 ul li.highlight { color: #eee; }
 
         .install-btn {
             display: inline-block;
-            margin: 20px 0;
+            margin: 10px 0;
             animation: btnGlow 1.5s ease-in-out infinite alternate;
         }
 
         @keyframes btnGlow {
             from { filter: brightness(1); }
-            to { filter: brightness(1.2) drop-shadow(0 0 10px #ff6600); }
+            to { filter: brightness(1.2) drop-shadow(0 0 8px #ff6600); }
+        }
+
+        .edition-card.v2 .install-btn {
+            animation: btnGlowCyan 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes btnGlowCyan {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2) drop-shadow(0 0 8px #00ffff); }
         }
 
         .links {
@@ -359,12 +442,50 @@
         </section>
 
         <section class="flasher-section">
-            <h2>⚡ Flash in 2 Minutes</h2>
-            <p>Connect your ESP32-C3 and click below. Firmware downloads and installs automatically.</p>
-            <div class="install-btn">
-                <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+            <h2>⚡ Choose Your Edition</h2>
+            <p>Connect your ESP32-C3 via USB, pick the version you want, then click Install.</p>
+
+            <div class="edition-cards">
+
+                <!-- ── V1 ORIGINAL ───────────────────────────────────────── -->
+                <div class="edition-card v1">
+                    <div class="edition-badge">v1.0.1 — Stable</div>
+                    <h3>⛏️ Original</h3>
+                    <ul>
+                        <li class="highlight">Dashboard global du pool</li>
+                        <li class="highlight">4 écrans : hashrate, stats, rewards, workers</li>
+                        <li>Prix BTC en temps réel</li>
+                        <li>Alertes workers offline</li>
+                        <li>Portail WiFi de configuration</li>
+                    </ul>
+                    <div class="install-btn">
+                        <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+                    </div>
+                    <p style="font-size:12px; color:#555; margin-top:8px;">Firmware stable, testé</p>
+                </div>
+
+                <!-- ── V2 SINGLE WORKER ──────────────────────────────────── -->
+                <div class="edition-card v2">
+                    <div class="edition-badge">v2.1.0 — Single Worker</div>
+                    <h3>🎯 Single Worker</h3>
+                    <ul>
+                        <li class="highlight">Surveille UN worker ciblé</li>
+                        <li class="highlight">Écran dédié : nom + hashrate + statut</li>
+                        <li class="highlight">Alerte rouge si TON worker passe offline</li>
+                        <li>Worker configurable depuis le portail WiFi</li>
+                        <li>Retour agrégat si aucun worker renseigné</li>
+                    </ul>
+                    <div class="install-btn">
+                        <esp-web-install-button manifest="single-worker/manifest.json"></esp-web-install-button>
+                    </div>
+                    <p style="font-size:12px; color:#555; margin-top:8px;">Build automatique — feature/single-worker</p>
+                </div>
+
             </div>
-            <p><em>Make sure your ESP32-C3 is connected via USB</em></p>
+            <p style="text-align:center; color:#444; font-size:12px; margin-top:16px;">
+                ⚠️ Make sure your ESP32-C3 is connected via USB &nbsp;|&nbsp;
+                Chrome / Edge required for Web Serial API
+            </p>
         </section>
 
         <div class="links">
@@ -397,7 +518,7 @@
             </div>
         </section>
         <footer class="footer">
-            <p>Version 1.0.1 - Created by <a href="https://github.com/Silexperience210" target="_blank">Silexperience</a> (CyberHornet Team)</p>
+            <p>Original v1.0.1 &nbsp;|&nbsp; Single Worker v2.1.0 — Created by <a href="https://github.com/Silexperience210" target="_blank">Silexperience</a> (CyberHornet Team)</p>
             <p>⭐ If you like this project, star it on GitHub!</p>
         </footer>
     </div>

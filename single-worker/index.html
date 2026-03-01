@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BraiinsHUD - Single Worker Edition Flasher</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    body { background: #1a1a2e; color: #eee; margin: 0; padding: 20px; min-height: 100vh; }
+    .container { max-width: 600px; margin: 0 auto; }
+    h1 { color: #ff6600; text-align: center; }
+    .badge { display: inline-block; background: #00ffff20; color: #00ffff; border: 1px solid #00ffff;
+             padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 20px; }
+    .card { background: #16213e; padding: 20px; border-radius: 12px; margin-bottom: 20px;
+            border: 1px solid #333; }
+    .feature { display: flex; align-items: flex-start; margin-bottom: 12px; }
+    .feature .icon { font-size: 20px; margin-right: 12px; flex-shrink: 0; }
+    .feature p { margin: 0; font-size: 14px; color: #aaa; }
+    .feature p strong { color: #eee; }
+    .flash-btn { text-align: center; margin: 30px 0; }
+    a { color: #00ffff; }
+    .back { text-align: center; margin-top: 20px; font-size: 13px; }
+    .version { text-align: center; color: #444; font-size: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="text-align:center; font-size:48px; margin-bottom:10px;">⛏️</div>
+    <h1>BraiinsHUD</h1>
+    <div style="text-align:center; margin-bottom:20px;">
+      <span class="badge">Single Worker Edition v2.1</span>
+    </div>
+
+    <div class="card">
+      <h2 style="color:#00ffff; margin-top:0;">What's new in this edition</h2>
+      <div class="feature">
+        <div class="icon">🎯</div>
+        <p><strong>Single Worker Focus</strong><br>
+        Monitor one specific worker with its own dedicated screen — name, hashrate, online/offline status.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🔔</div>
+        <p><strong>Worker-specific Alerts</strong><br>
+        Red border blinks only when YOUR worker goes offline, not when others do.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⚙️</div>
+        <p><strong>Configurable from Setup Portal</strong><br>
+        Enter your worker name directly in the WiFi setup page — no recompilation needed.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">↩️</div>
+        <p><strong>Backwards Compatible</strong><br>
+        Leave worker name empty → displays aggregate stats (same as original).</p>
+      </div>
+    </div>
+
+    <div class="flash-btn">
+      <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+    </div>
+
+    <div class="card" style="font-size:13px; color:#888;">
+      <strong style="color:#eee;">After flashing:</strong><br>
+      1. Connect to WiFi AP: <strong style="color:#ff6600;">BraiinsHUD-Setup</strong> (pass: braiins123)<br>
+      2. Open browser → <strong style="color:#ff6600;">192.168.4.1</strong><br>
+      3. Fill in your WiFi, Braiins API token, and <strong style="color:#00ffff;">Worker Name</strong> field<br>
+      4. Save → device restarts and monitors your worker
+    </div>
+
+    <div class="back">
+      <a href="..">← Back to original BraiinsHUD</a> &nbsp;|&nbsp;
+      <a href="https://github.com/Silexperience210/ESP32_BraiinsHUD_Cyberpunk/tree/feature/single-worker" target="_blank">📁 Source Code</a>
+    </div>
+    <div class="version">Built automatically from feature/single-worker branch by GitHub Actions</div>
+  </div>
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+</body>
+</html>
