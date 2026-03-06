@@ -476,25 +476,35 @@ void drawScreenWorkersAggregate() {
   int spacing = 10;
   int startX = CENTER_X - boxWidth - spacing/2;
 
-  // Offline box
-  tft.drawRect(startX, y, boxWidth, boxHeight,
-    data.workers_offline > 0 ? COLOR_SECONDARY : COLOR_DIM);
-  tft.setTextColor(data.workers_offline > 0 ? COLOR_SECONDARY : COLOR_DIM, COLOR_BG);
-  tft.setTextSize(2);
-  tft.setTextDatum(middle_center);
-  tft.drawString(String(data.workers_offline).c_str(), startX + boxWidth/2, y + 18);
-  tft.setTextSize(1);
-  tft.drawString("OFFLINE", startX + boxWidth/2, y + 38);
+  // Offline box — only show if workers are actually offline
+  if (data.workers_offline > 0) {
+    tft.drawRect(startX, y, boxWidth, boxHeight, COLOR_SECONDARY);
+    tft.setTextColor(COLOR_SECONDARY, COLOR_BG);
+    tft.setTextSize(2);
+    tft.setTextDatum(middle_center);
+    tft.drawString(String(data.workers_offline).c_str(), startX + boxWidth/2, y + 18);
+    tft.setTextSize(1);
+    tft.drawString("OFFLINE", startX + boxWidth/2, y + 38);
+  }
 
-  // Disabled box
+  // Disabled box — only show if workers are disabled
   startX = CENTER_X + spacing/2;
-  tft.drawRect(startX, y, boxWidth, boxHeight,
-    data.workers_disabled > 0 ? COLOR_WARNING : COLOR_DIM);
-  tft.setTextColor(data.workers_disabled > 0 ? COLOR_WARNING : COLOR_DIM, COLOR_BG);
-  tft.setTextSize(2);
-  tft.drawString(String(data.workers_disabled).c_str(), startX + boxWidth/2, y + 18);
-  tft.setTextSize(1);
-  tft.drawString("DISABLED", startX + boxWidth/2, y + 38);
+  if (data.workers_disabled > 0) {
+    tft.drawRect(startX, y, boxWidth, boxHeight, COLOR_WARNING);
+    tft.setTextColor(COLOR_WARNING, COLOR_BG);
+    tft.setTextSize(2);
+    tft.drawString(String(data.workers_disabled).c_str(), startX + boxWidth/2, y + 18);
+    tft.setTextSize(1);
+    tft.drawString("DISABLED", startX + boxWidth/2, y + 38);
+  }
+
+  // If everything is fine: show a clean "all clear" message
+  if (data.workers_offline == 0 && data.workers_disabled == 0) {
+    tft.setTextDatum(middle_center);
+    tft.setTextColor(COLOR_SUCCESS, COLOR_BG);
+    tft.setTextSize(1);
+    tft.drawString("ALL WORKERS ONLINE", CENTER_X, y + boxHeight / 2);
+  }
 
   tft.setTextDatum(middle_center);
   tft.setTextColor(COLOR_DIM, COLOR_BG);
